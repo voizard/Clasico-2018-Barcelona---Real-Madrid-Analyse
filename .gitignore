@@ -4,7 +4,7 @@ data/events/
 
 # Generated analysis outputs — regenerate by running the scripts in src/.
 data/*.csv
-data/matches.json
+data/*.json
 
 __pycache__/
 *.pyc

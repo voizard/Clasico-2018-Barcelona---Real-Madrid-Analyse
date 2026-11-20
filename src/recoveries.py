@@ -227,6 +227,47 @@ def zone_map(df, rec, raw_events, tag, out_path):
     return out_path
 
 
+def half_zone_map(rec, tag, out_path, red_minute=None):
+    """Recovery height by half — the sending-off story in one picture.
+
+    A whole-match average says "Real pressed higher". Split at the red card and
+    the picture flips: at 11 v 11 Barcelona is the higher line; it collapses
+    only once it plays the second half a man down.
+    """
+    teams = list(dict.fromkeys(rec["team_name"]))
+    colours = {"Barcelona": "#a50044", "Real Madrid": "#00529f"}
+    label2 = "2nd half (Barcelona a man down" + (f" from {red_minute}')" if red_minute else ")")
+    halves = [(1, "1st half (11 v 11)"), (2, label2)]
+    rng = np.random.default_rng(0)
+    fig, axes = plt.subplots(2, 1, figsize=(11, 6.6), sharex=True)
+    for ax, (per, lab) in zip(axes, halves):
+        sub = rec[rec["period"] == per]
+        for i, t in enumerate(teams):
+            xs = sub[sub.team_name == t]["loc_x"].to_numpy()
+            if not len(xs):
+                continue
+            y = np.full(len(xs), i) + rng.uniform(-0.13, 0.13, len(xs))
+            ax.scatter(xs, y, s=30, color=colours.get(t, "#7f8c8d"), alpha=0.65,
+                       edgecolors="white", linewidths=0.4, zorder=3)
+            ax.plot([xs.mean(), xs.mean()], [i - 0.30, i + 0.30], color="black",
+                    lw=2.4, zorder=4)
+            ax.annotate(f"mean {xs.mean():.0f} m", xy=(xs.mean(), i + 0.32),
+                        fontsize=8.5, ha="center", color="black", zorder=5)
+        ax.set_yticks(range(len(teams)))
+        ax.set_yticklabels(teams)
+        ax.set_ylim(-0.55, len(teams) - 0.15)
+        ax.axvspan(60, 120, color="#27ae60", alpha=0.08)
+        ax.grid(axis="x", alpha=0.25)
+        ax.set_title(lab, fontsize=10.5, loc="left")
+    axes[-1].set_xlabel("recovery position  —  0 = own goal  ·  60 = halfway  ·  "
+                        "120 = opponent goal   (green band = opponent's half)")
+    fig.suptitle(f"Where balls were won, by half — {tag}", fontsize=12.5)
+    fig.tight_layout(rect=(0, 0, 1, 0.94))
+    fig.savefig(out_path, dpi=140)
+    plt.close(fig)
+    return out_path
+
+
 def write_csv(rows, path, with_shot):
     with open(path, "w", encoding="utf-8-sig", newline="") as fh:
         head = ["player", "team", "match_id", "minute", "x", "y", "type"]
@@ -258,6 +299,8 @@ def main():
                     help="only recoveries followed by a shot of the same team")
     ap.add_argument("--by-zone", action="store_true",
                     help="longitudinal distribution per team")
+    ap.add_argument("--by-half", action="store_true",
+                    help="recovery height split by half (the sending-off story)")
     args = ap.parse_args()
 
     files = event_files()
@@ -302,7 +345,7 @@ def main():
 
     os.makedirs(OUT_DIR, exist_ok=True)
     os.makedirs(DATA, exist_ok=True)
-    if args.match and not args.by_zone:
+    if args.match and not (args.by_zone or args.by_half):
         df = load_match(files[0])
         rec = recoveries(df, args.with_failures, args.all_interceptions)
         if args.only_shots:
@@ -318,14 +361,24 @@ def main():
         both_map(rec, tag, out, with_minutes=args.only_shots)
         print(f"map: {out}")
 
-    if args.by_zone:
+    if args.by_zone or args.by_half:
         df = load_match(files[0])
         rec = recoveries(df, args.with_failures, args.all_interceptions)
         with open(files[0], encoding="utf-8") as fh:
             raw = json.load(fh)
-        out = os.path.join(OUT_DIR, f"recovery_zones_{tag}.png")
-        zone_map(df, rec, raw, tag, out)
-        print(f"map: {out}")
+        if args.by_zone:
+            out = os.path.join(OUT_DIR, f"recovery_zones_{tag}.png")
+            zone_map(df, rec, raw, tag, out)
+            print(f"map: {out}")
+        if args.by_half:
+            red = None
+            for e in raw:
+                if (e.get("foul_committed") or {}).get("card", {}).get("name") == "Red Card":
+                    red = e.get("minute")
+                    break
+            out = os.path.join(OUT_DIR, f"recovery_zones_{tag}_by_half.png")
+            half_zone_map(rec, tag, out, red_minute=red)
+            print(f"map: {out}")
 
     csv = os.path.join(DATA, f"recoveries_{tag}.csv")
     write_csv(rows, csv, args.only_shots)
