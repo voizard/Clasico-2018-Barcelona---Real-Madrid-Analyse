@@ -19,8 +19,8 @@ played better, and in what way?*
 | **Key passes** | 8 | **15** |
 | Goals from key passes | 2 | 2 |
 | xG from key passes | 0.89 | **1.64** |
-| Recoveries in the opponent's half | 36 % | **46 %** |
-| Mean `Pressure` position | 52 m | **58 m** |
+| Recoveries in the opponent's half, 1st half (11 v 11) | 43 % | 43 % |
+| Mean `Pressure` position, 1st half (11 v 11) | **57 m** | 53 m |
 | Busiest passer (named connections) | **Rakitić (159)** | Modrić (148) |
 
 **1. Real Madrid crossed four times as often and got nothing from it.**
@@ -28,18 +28,34 @@ played better, and in what way?*
 (xG 0.10 and 0.03) and no goal. Barcelona's single meaningful cross (Sergi
 Roberto, 9') was finished by Suárez. *Volume without threat.*
 
-**2. Real Madrid pressed higher — the opposite of the first impression.**
-Real recovered **46 %** of its balls in Barcelona's half (Barça: 36 %), and its
-pure `Pressure` events sat further up the pitch (58 m vs 52 m on average). The
-median recovery position tells the same story: 45.7 m for Real, 38.6 m for
-Barcelona.
+**2. The pressing story is a sending-off story — Barcelona pressed higher until
+they went a man down.**
+Taken over the whole match, Real Madrid looks like the higher-pressing side:
+it recovered 46 % of its balls in Barcelona's half (Barça 36 %) and its
+`Pressure` events averaged 58 m vs 52 m. But that whole-match view is an
+artefact of the second half. **Sergi Roberto was sent off in the 46th minute**
+(`match_context.py`), so Barcelona played the entire second half with ten men —
+and the split by half shows exactly what that did:
 
-The reason Barcelona *looks* like the high-pressing side is a genuine but
-different effect: its distribution is **wider and bimodal** — a cluster deep in
-its own box *and* one in the attacking third. The deep cluster is mostly an
-artefact: 5 of the 10 recoveries in Barcelona's own box are goalkeeper
-distributions by ter Stegen, not pressing. Excluding the keeper, Barcelona's mean
-recovery position rises to 54.4 m — right back in line.
+| | 1st half (11 v 11) | 2nd half (Barça a man down) |
+|---|---|---|
+| Barça recoveries — mean position | **55.2 m** | 41.6 m |
+| Real recoveries — mean position | 50.5 m | 52.0 m |
+| Barça `Pressure` events (mean x) | 44 (57.3 m) | 46 (46.4 m) |
+| Real `Pressure` events (mean x) | 53 (52.5 m) | **89 (61.4 m)** |
+
+At **11 v 11 Barcelona actually pressed slightly higher** (Pressure mean 57.3 m
+vs 52.5 m; recoveries 55.2 m vs 50.5 m). Real's dominance of territory appears
+only after the red card — 89 pressure events to Barça's 46 in the second half.
+So the honest reading is not "Real pressed higher" but "the sending-off handed
+Real the pitch".
+
+Two further artefacts worth knowing before reading the whole-match averages:
+Barcelona's recovery distribution is **bimodal** — a cluster deep in its own box
+*and* one in the attacking third — and the deep cluster is mostly the goalkeeper:
+5 of its 8 recoveries in its own box are ter Stegen distributions, not pressing.
+Excluding keepers, the two teams' mean recovery positions over the whole match
+are almost identical (Barça 54.4 m, Real 52.3 m).
 
 **3. The goals were made, not crossed.**
 All four goals came from open-play passes, and the key-pass map shows exactly
@@ -77,15 +93,40 @@ The mean position of each player's ball actions *is* the structural finding:
   The triangle is a spine, not a closed unit: 251 of the trio's 431 connections
   still go to the rest of the team (Iniesta 56, Sergi Roberto 36, Umtiti and
   Piqué 29 each).
-- **Each side had one one-dimensional node.** Coutinho and Lucas Vázquez lean
-  hardest on a single partner of anyone in their team: Coutinho routes 38 % of
-  his 53 connections to Sergi Roberto alone (their right-side pair, 20 passes,
-  is Barcelona's second-strongest link), Lucas Vázquez 33 % of his 42 to Modrić.
-  Both also sit furthest from the team's centre of gravity — Vázquez at x = 86.5,
-  y = 69.1, the most advanced and most touchline-bound Real player. Careful with
-  the totals, though: Coutinho started and came off at half time (44 min), Lucas
-  Vázquez only came on at 67' (27 min), so per 90 minutes **Vázquez was the more
-  involved** (140 vs 108 connections).
+
+---
+
+## What happened in the match (Clásico 9924)
+
+The structural findings above only make sense against the match narrative, so
+`src/match_context.py` extracts it from the events:
+
+**Goals.** 9' Suárez (assist Sergi Roberto) 1–0 · 14' Ronaldo (assist Benzema)
+1–1 · 51' Messi (assist Suárez) 2–1 · 71' Bale (assist Asensio) 2–2.
+
+**Cards** (9 yellow, 1 red). 11' Isco · 30' Varane · 43' Suárez and 43' Ramos
+(both for dissent) · 44' Messi · **46' Sergi Roberto (red)** · 75' Bale ·
+76' Marcelo · 84' Rakitić. The red card is the pivotal event of the match: it
+turned the second half into eleven against ten.
+
+**Substitutions.** 45' Real: Ronaldo → Asensio (Real had an injury stoppage in
+the 14th minute; Ronaldo did not return after the break) · 45' Barça: Coutinho →
+Semedo · 56' Barça: Iniesta → Paulinho · 67' Real: Isco → Vázquez · 83' Real:
+Kroos → Kovačić · 91' Barça: Suárez → Alcácer.
+
+**Injury stoppages.** 14' and 15' (Ronaldo and Barça), 58', and two in the 86th
+minute.
+
+**Fouls.** Barcelona 9, Real Madrid 22 — consistent with a team chasing the game
+with ten men.
+
+**Half-by-half split.** Possession: Barça 56 % / 44 % in the first half, then
+41 % / 59 % after the break. Crosses: Barça 4, Real 10 (first half) then Barça 1,
+Real 10. Shots: 4 v 9 then 7 v 8. xG: 0.27 v 1.31 then 0.74 v 0.46.
+
+The early substitutions also matter for the pass networks: Coutinho (44 min) and
+Iniesta (55 min) left the pitch early, and Ronaldo (47 min) did not return — so
+their connection totals are low by minutes played, not by involvement.
 
 ---
 
@@ -101,6 +142,7 @@ The mean position of each player's ball actions *is* the structural finding:
 | `figures/pass_network_9924_Real.png` | same for Real Madrid — the Casemiro / Marcelo shape |
 | `figures/recoveries_9924_shots_*.png` | recoveries followed, in the same possession, by a shot of the same team |
 | `figures/recovery_zones_9924.png` | longitudinal distribution per team — the pressing-height question |
+| `figures/recovery_zones_9924_by_half.png` | the same, split by half: Barcelona is the higher line at 11 v 11, and only drops after the red card |
 
 All maps share one reading direction: **own goal on the left, attack to the
 right**. StatsBomb already normalises coordinates this way (verified: every
@@ -154,6 +196,11 @@ that passed to each other most often, using StatsBomb's `pass.recipient` field
 (filled for 1081 of 1161 passes in the Clásico; passes without a recipient are
 skipped, not guessed).
 
+**Match context.** `match_context.py` reads goals (`Shot` with outcome `Goal`,
+plus `Own Goal For`), cards (`foul_committed.card`, `bad_behaviour.card`),
+substitutions, injury stoppages and fouls straight from the events, and splits
+possession, shots, xG and crosses by half (StatsBomb `period`).
+
 **Direction.** `src/clean_events.py` unpacks StatsBomb's list-valued coordinate
 fields into numeric columns and normalises direction, but verified that the
 open-data files are already oriented correctly.
@@ -195,7 +242,8 @@ open-data files are already oriented correctly.
 │   ├── short_names.py       # full StatsBomb name -> short name
 │   ├── paths.py             # repo-relative paths
 │   ├── identify_matches.py  # teams, score, shots, xG per file
-│   ├── crosses.py           # the four analyses
+│   ├── match_context.py     # goals, cards, subs, injuries, half split
+│   ├── crosses.py           # the analyses
 │   ├── key_passes.py
 │   ├── pass_network.py
 │   └── recoveries.py
@@ -209,11 +257,13 @@ pip install -r requirements.txt
 python3 data/get_data.py                 # 22 event files -> data/events/
 cd src
 python3 identify_matches.py              # sanity check: who played whom
+python3 match_context.py --match 9924    # goals, cards, subs, half split
 python3 crosses.py --match 9924          # the Clásico, with per-team maps
 python3 key_passes.py --match 9924
 python3 pass_network.py --match 9924
 python3 recoveries.py --match 9924 --only-shots
 python3 recoveries.py --match 9924 --by-zone
+python3 recoveries.py --match 9924 --by-half   # the sending-off story
 python3 crosses.py                       # season summary across all 22 matches
 ```
 
