@@ -132,22 +132,77 @@ their connection totals are low by minutes played, not by involvement.
 
 ## Figures
 
-| File | What it shows |
-|---|---|
-| `figures/crosses_9924_Barcelona.png` | Barcelona's 5 crosses; green = completed, dot = origin, arrow head = target |
-| `figures/crosses_9924_Real.png` | Real Madrid's 20 crosses |
-| `figures/key_passes_9924_Barcelona.png` | Key passes; **gold + labelled = goal from this pass**, red = dangerous (xG ≥ 0.10), grey = other |
-| `figures/key_passes_9924_Real.png` | same for Real Madrid |
-| `figures/pass_network_9924_Barcelona.png` | pass network; dot = mean position, line thickness = pass count |
-| `figures/pass_network_9924_Real.png` | same for Real Madrid — the Casemiro / Marcelo shape |
-| `figures/recoveries_9924_shots_*.png` | recoveries followed, in the same possession, by a shot of the same team |
-| `figures/recovery_zones_9924.png` | longitudinal distribution per team — the pressing-height question |
-| `figures/recovery_zones_9924_by_half.png` | the same, split by half: Barcelona is the higher line at 11 v 11, and only drops after the red card |
-
 All maps share one reading direction: **own goal on the left, attack to the
 right**. StatsBomb already normalises coordinates this way (verified: every
 goalkeeper sits at x ≈ 2–6 in *both* halves, in all 22 matches), so nothing is
 mirrored — the arrow at the top just makes it visible.
+
+### Pass networks — both teams
+
+Each player sits at the mean position of his ball actions; line thickness is the
+number of passes between the two. The dot position *is* the finding: Casemiro on
+the centre-back line, Marcelo high and wide left, Rakitić the central hub.
+
+**Barcelona** — the Busquets / Rakitić / Messi triangle is the strongest three-man
+triangle in the match.
+
+![Pass network Barcelona](figures/pass_network_9924_Barcelona.png)
+
+**Real Madrid** — Casemiro as a third centre-back, Marcelo advanced on the left.
+
+![Pass network Real Madrid](figures/pass_network_9924_Real.png)
+
+### Dangerous passes (key passes)
+
+A pass immediately followed by a shot. **Gold + labelled = a goal came from this
+pass** (scorer and provider named); red = dangerous (resulting shot xG ≥ 0.10);
+grey = other key pass. Only goals are labelled — labelling all 23 made the first
+version unreadable.
+
+**Barcelona** — 8 key passes, 2 goals.
+
+![Key passes Barcelona](figures/key_passes_9924_Barcelona.png)
+
+**Real Madrid** — 15 key passes, 2 goals.
+
+![Key passes Real Madrid](figures/key_passes_9924_Real.png)
+
+### Ball recoveries leading to a shot
+
+Recoveries followed, in the same possession, by a shot of the **same** team.
+The minute is labelled; a **gold ring** marks the recovery that ended in a goal.
+
+**Both teams** (circle = Barcelona, triangle = Real Madrid):
+
+![Recoveries leading to a shot, both teams](figures/recoveries_9924_shots_both.png)
+
+### Crosses
+
+A cross is a pass with `pass.cross == true`. Green = completed, grey = not;
+dot = origin, arrow head = target.
+
+**Barcelona** — 5 crosses, 2 completed, 1 goal.
+
+![Crosses Barcelona](figures/crosses_9924_Barcelona.png)
+
+**Real Madrid** — 20 crosses, 6 completed, 0 goals. Volume without threat.
+
+![Crosses Real Madrid](figures/crosses_9924_Real.png)
+
+### Distribution of ball recoveries across the pitch
+
+Where balls were won, along the pitch length. The whole-match view says "Real
+pressed higher"; split by half it flips — Barcelona is the higher line at 11 v 11
+and only drops after the 46th-minute red card.
+
+**Whole match, per team** (yellow = goalkeeper recoveries, which pull the mean
+deep):
+
+![Recovery zones](figures/recovery_zones_9924.png)
+
+**Split by half** — the sending-off story in one picture:
+
+![Recovery zones by half](figures/recovery_zones_9924_by_half.png)
 
 ---
 
