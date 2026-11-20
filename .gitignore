@@ -1,0 +1,13 @@
+# Raw match data is fetched by data/get_data.py, never committed.
+# It belongs to StatsBomb (open data, non-commercial use with attribution).
+data/events/
+
+# Generated analysis outputs — regenerate by running the scripts in src/.
+data/*.csv
+data/matches.json
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
