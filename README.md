@@ -2,7 +2,8 @@
 
 Event-level analysis of **FC Barcelona's 2017/18 La Liga season** (plus the 2018
 World Cup group stage), built on [StatsBomb Open Data](https://github.com/statsbomb/open-data).
-Three focused views: **crosses**, **key passes** and **ball recoveries**.
+Four focused views: **crosses**, **key passes**, **pass networks** and **ball
+recoveries**.
 
 The headline question was simple: *the Clásico ended 2–2 — but who actually
 played better, and in what way?*
@@ -20,6 +21,7 @@ played better, and in what way?*
 | xG from key passes | 0.89 | **1.64** |
 | Recoveries in the opponent's half | 36 % | **46 %** |
 | Mean `Pressure` position | 52 m | **58 m** |
+| Busiest passer (named connections) | **Rakitić (159)** | Modrić (148) |
 
 **1. Real Madrid crossed four times as often and got nothing from it.**
 20 crosses to Barcelona's 5 — but Real's crosses produced only two shots
@@ -51,6 +53,24 @@ leading to a shot, 14 goals). The most productive crossers were Alba
 (30 crosses, 12 completed, 8 shots, 1 goal), Suárez (18/10/7) and Dembélé
 (17/9/6, 2 goals).
 
+**4. The pass networks show the shape behind the numbers.**
+The mean position of each player's ball actions *is* the structural finding:
+
+- **Casemiro played as a third centre-back.** His mean position sits at x = 45.9 m,
+  right on the centre-back line (Ramos 42.5, Varane 41.2), while Kroos (63.0) and
+  Modrić (65.9) are 17–20 m further forward. His most frequent passes go sideways
+  and back — Ramos 9×, Modrić 9× — not forward.
+- **Marcelo held the ball high and wide.** Mean position x = 70.2 m, y = 12.6
+  (far left touchline), with 242 ball actions (second only to Modrić's 243) and
+  72 passes. The right-side triangle Ramos → Marcelo (14×), Marcelo → Kroos
+  (13×), Modrić → Marcelo (10×), Kroos → Marcelo (9×) is the visible passing row.
+- **Rakitić was Barcelona's central link — and the busiest player on the pitch.**
+  He is involved in 159 named pass connections (80 out, 79 in), more than anyone
+  on either team (Modrić 148, Busquets 147, Kroos 139), and appears in six of
+  Barcelona's fifteen most frequent connections (Rakitić → Messi 20×, Rakitić →
+  Busquets 16×, Busquets → Rakitić 14×, Messi → Rakitić 14×, Iniesta → Rakitić
+  13×, Rakitić → Iniesta 10×).
+
 ---
 
 ## Figures
@@ -61,6 +81,8 @@ leading to a shot, 14 goals). The most productive crossers were Alba
 | `figures/crosses_9924_Real.png` | Real Madrid's 20 crosses |
 | `figures/key_passes_9924_Barcelona.png` | Key passes; **gold + labelled = goal from this pass**, red = dangerous (xG ≥ 0.10), grey = other |
 | `figures/key_passes_9924_Real.png` | same for Real Madrid |
+| `figures/pass_network_9924_Barcelona.png` | pass network; dot = mean position, line thickness = pass count |
+| `figures/pass_network_9924_Real.png` | same for Real Madrid — the Casemiro / Marcelo shape |
 | `figures/recoveries_9924_shots_*.png` | recoveries followed, in the same possession, by a shot of the same team |
 | `figures/recovery_zones_9924.png` | longitudinal distribution per team — the pressing-height question |
 
@@ -110,6 +132,12 @@ either a `Ball Recovery` event (excluding those flagged `recovery_failure`) or a
 83. For the pressing question we also count raw `Pressure` events, which are a
 cleaner signal than recoveries because they are not biased by the goalkeeper.
 
+**Pass network.** Each player sits at the mean position of his ball actions
+(`loc_x`, `loc_y` over every event with a coordinate); lines connect the pairs
+that passed to each other most often, using StatsBomb's `pass.recipient` field
+(filled for 1081 of 1161 passes in the Clásico; passes without a recipient are
+skipped, not guessed).
+
 **Direction.** `src/clean_events.py` unpacks StatsBomb's list-valued coordinate
 fields into numeric columns and normalises direction, but verified that the
 open-data files are already oriented correctly.
@@ -151,8 +179,9 @@ open-data files are already oriented correctly.
 │   ├── short_names.py       # full StatsBomb name -> short name
 │   ├── paths.py             # repo-relative paths
 │   ├── identify_matches.py  # teams, score, shots, xG per file
-│   ├── crosses.py           # the three analyses
+│   ├── crosses.py           # the four analyses
 │   ├── key_passes.py
+│   ├── pass_network.py
 │   └── recoveries.py
 └── figures/                 # generated PNGs
 ```
@@ -166,6 +195,7 @@ cd src
 python3 identify_matches.py              # sanity check: who played whom
 python3 crosses.py --match 9924          # the Clásico, with per-team maps
 python3 key_passes.py --match 9924
+python3 pass_network.py --match 9924
 python3 recoveries.py --match 9924 --only-shots
 python3 recoveries.py --match 9924 --by-zone
 python3 crosses.py                       # season summary across all 22 matches
