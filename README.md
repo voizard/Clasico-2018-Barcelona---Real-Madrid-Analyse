@@ -70,6 +70,22 @@ The mean position of each player's ball actions *is* the structural finding:
   Barcelona's fifteen most frequent connections (Rakitić → Messi 20×, Rakitić →
   Busquets 16×, Busquets → Rakitić 14×, Messi → Rakitić 14×, Iniesta → Rakitić
   13×, Rakitić → Iniesta 10×).
+- **Barcelona's engine was a triangle.** Busquets, Rakitić and Messi form the
+  strongest three-man triangle in the entire match: 90 passes among the three
+  (Rakitić ↔ Messi 34, Busquets ↔ Rakitić 30, Busquets ↔ Messi 26). The best
+  triangle Real Madrid can field — Benzema / Kroos / Marcelo — reaches only 64.
+  The triangle is a spine, not a closed unit: 251 of the trio's 431 connections
+  still go to the rest of the team (Iniesta 56, Sergi Roberto 36, Umtiti and
+  Piqué 29 each).
+- **Each side had one one-dimensional node.** Coutinho and Lucas Vázquez lean
+  hardest on a single partner of anyone in their team: Coutinho routes 38 % of
+  his 53 connections to Sergi Roberto alone (their right-side pair, 20 passes,
+  is Barcelona's second-strongest link), Lucas Vázquez 33 % of his 42 to Modrić.
+  Both also sit furthest from the team's centre of gravity — Vázquez at x = 86.5,
+  y = 69.1, the most advanced and most touchline-bound Real player. Careful with
+  the totals, though: Coutinho started and came off at half time (44 min), Lucas
+  Vázquez only came on at 67' (27 min), so per 90 minutes **Vázquez was the more
+  involved** (140 vs 108 connections).
 
 ---
 
